@@ -1,0 +1,24 @@
+# Local development files
+.DS_Store
+.env
+node_modules/
+.vscode/
+.idea/
+PROJECT_TEMPLATE.md
+projects.json
+QUICKSTART.md
+README.md
+
+# Build outputs
+dist/
+build/
+out/
+
+# IDE
+*.swp
+*.swo
+*.iml
+
+# OS
+Thumbs.db
+*.log

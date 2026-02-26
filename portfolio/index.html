@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hagar's Mobile Dev Projects</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #06070b;
+      --surface: #0b0f1a;
+      --surface2: #101527;
+      --border: #1b2240;
+      --glow: #6ff6ff;
+      --glow2: #7cff6b;
+      --glow3: #ff7dd8;
+      --flutter: #6ad9ff;
+      --react: #78f3ff;
+      --text: #cfe7ff;
+      --text-bright: #f6fbff;
+      --muted: #6b7594;
+      --muted2: #8e9ab8;
+    }
+
+    body {
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(111,246,255,0.08), transparent 60%),
+                  radial-gradient(900px 700px at 90% 20%, rgba(255,125,216,0.08), transparent 60%),
+                  radial-gradient(800px 600px at 50% 90%, rgba(124,255,107,0.08), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--dur) ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: var(--max-op); }
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orb-drift 12s ease-in-out infinite alternate;
+    }
+
+    .orb1 { width: 520px; height: 520px; background: rgba(111,246,255,0.09); top: -120px; right: -120px; }
+    .orb2 { width: 420px; height: 420px; background: rgba(124,255,107,0.08); bottom: 80px; left: -120px; animation-delay: -6s; }
+
+    @keyframes orb-drift { from { transform: translate(0,0); } to { transform: translate(30px, 30px); } }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header { padding: 64px 0 52px; }
+
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+      box-shadow: 0 0 18px rgba(111,246,255,0.15);
+    }
+
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .avatar-pulse {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid rgba(111,246,255,0.4);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+
+    .avatar-info { line-height: 1.4; }
+    .avatar-name { font-weight: 600; font-size: 15px; color: var(--text-bright); }
+    .avatar-handle { font-size: 13px; color: var(--muted2); font-family: 'JetBrains Mono', monospace; }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    h1 .accent-blue { color: var(--glow); }
+    h1 .accent-green { color: var(--glow2); }
+
+    .tagline {
+      font-size: 14px;
+      color: var(--muted2);
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tagline .hl { color: var(--glow3); }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.03em;
+      box-shadow: 0 0 12px rgba(111,246,255,0.08);
+    }
+
+    .bd-flutter { border-color: rgba(84,197,248,0.4); color: var(--flutter); background: rgba(84,197,248,0.07); }
+    .bd-react { border-color: rgba(97,218,251,0.4); color: var(--react); background: rgba(97,218,251,0.07); }
+    .bd-course { border-color: rgba(63,185,80,0.4); color: var(--glow2); background: rgba(63,185,80,0.07); }
+
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .dot.blink { animation: blink 1.5s step-end infinite; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+      margin: 8px 0 40px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover { border-color: var(--glow); box-shadow: 0 0 18px rgba(111,246,255,0.18); }
+
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted2);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: var(--muted2);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .search-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-bright);
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: rgba(88,166,255,0.5);
+      box-shadow: 0 0 0 2px rgba(88,166,255,0.15);
+    }
+
+    .search-hint {
+      font-size: 11px;
+      color: var(--muted2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted2);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      color: var(--text-bright);
+      border-color: rgba(111,246,255,0.55);
+      background: rgba(111,246,255,0.14);
+      box-shadow: 0 0 14px rgba(111,246,255,0.18);
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--muted2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .toggle input { accent-color: var(--glow); }
+
+    .results-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 12px 0 18px;
+      font-size: 11px;
+      color: var(--muted2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .ghost-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted2);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .ghost-btn:hover {
+      color: var(--text-bright);
+      border-color: rgba(111,246,255,0.55);
+      background: rgba(111,246,255,0.1);
+      box-shadow: 0 0 12px rgba(111,246,255,0.14);
+    }
+
+    .projects-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 48px 1fr auto auto;
+      align-items: start;
+      gap: 16px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(88,166,255,0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .project-card:hover {
+      border-color: rgba(111,246,255,0.45);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45), 0 0 25px rgba(111,246,255,0.12);
+    }
+
+    .project-card:hover::before { opacity: 1; }
+    .project-card.wip { opacity: 0.55; }
+
+    .project-index {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      padding-top: 3px;
+    }
+
+    .project-main { min-width: 0; }
+
+    .project-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-chip {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+      border: 1px solid rgba(63,185,80,0.4);
+      color: var(--glow2);
+      background: rgba(63,185,80,0.08);
+    }
+
+    .wip-chip {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #e3b341;
+      background: rgba(227,179,65,0.1);
+      border: 1px solid rgba(227,179,65,0.3);
+      border-radius: 4px;
+      padding: 1px 7px;
+      letter-spacing: 0.06em;
+    }
+
+    .project-desc { font-size: 13px; color: var(--muted2); line-height: 1.6; }
+
+    .project-tech { display: flex; align-items: flex-start; padding-top: 3px; }
+
+    .tech-pill {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+
+    .tp-flutter { background: rgba(84,197,248,0.1); color: var(--flutter); border: 1px solid rgba(84,197,248,0.25); }
+    .tp-react   { background: rgba(97,218,251,0.1); color: var(--react);   border: 1px solid rgba(97,218,251,0.25); }
+    .tp-other   { background: rgba(247,129,102,0.1); color: var(--glow3);   border: 1px solid rgba(247,129,102,0.25); }
+
+    .project-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+
+    .link-empty {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--muted2);
+      background: var(--surface2);
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .link-btn:hover { color: var(--glow); border-color: rgba(111,246,255,0.5); background: rgba(111,246,255,0.08); box-shadow: 0 0 14px rgba(111,246,255,0.15); }
+    .link-btn.demo:hover { color: var(--flutter); border-color: rgba(106,217,255,0.5); background: rgba(106,217,255,0.08); box-shadow: 0 0 14px rgba(106,217,255,0.15); }
+    .link-btn.live:hover { color: var(--glow2); border-color: rgba(124,255,107,0.5); background: rgba(124,255,107,0.08); box-shadow: 0 0 14px rgba(124,255,107,0.15); }
+
+    .empty-state {
+      padding: 40px 0 10px;
+      text-align: center;
+      color: var(--muted2);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    footer {
+      margin-top: 64px;
+      padding: 28px 0 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-text { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+    .footer-link { color: var(--glow); text-decoration: none; }
+    .footer-link:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .controls { grid-template-columns: 1fr; }
+      .project-card { grid-template-columns: 1fr; gap: 12px; }
+      .project-index { display: none; }
+      .project-tech { order: -1; }
+      .project-links { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="container">
+
+  <header>
+    <div class="avatar-row">
+      <div class="avatar">
+        <div class="avatar-pulse"></div>
+        <img src="assets/moon-svgrepo-com.svg" alt="Hagar" onerror="this.style.display='none'" />
+      </div>
+      <div class="avatar-info">
+        <div class="avatar-name">Hagar Khaled Helmy</div>
+        <a href="https://github.com/Hagar-Khaled" target="_blank" class="avatar-handle">@Hagar-Khaled</a>
+      </div>
+    </div>
+
+    <h1>Mobile Dev<br/><span class="accent-blue">Course</span> <span class="accent-green">Projects</span></h1>
+    <p class="tagline">// <span class="hl">Flutter</span> &amp; <span class="hl">React</span> — built weak by weak ✨</p>
+
+    <div class="badges">
+      <span class="badge bd-flutter"><span class="dot blink"></span>Flutter</span>
+      <span class="badge bd-react"><span class="dot blink"></span>React</span>
+      <span class="badge bd-course">Mobile Computing Course · 2025/26</span>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <div class="stats">
+    <div class="stat-card"><div class="stat-num" id="s-total">—</div><div class="stat-label">Projects</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-flutter">—</div><div class="stat-label">Flutter</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-react">—</div><div class="stat-label">React</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-live">—</div><div class="stat-label">Deployed</div></div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">// projects</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <input id="search-input" class="search-input" type="search" placeholder="Search by name, tech, or description" />
+      <span class="search-hint">Tip: try "flutter", "react", or a feature keyword.</span>
+    </div>
+    <div>
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="flutter">Flutter</button>
+        <button class="filter-btn" data-filter="react">React</button>
+        <button class="filter-btn" data-filter="wip">In progress</button>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="only-live" />
+        Deployed only
+      </label>
+    </div>
+  </div>
+
+  <div class="results-row">
+    <span id="results-count">Showing 0 of 0</span>
+    <button class="ghost-btn" id="reset-btn" type="button">Reset</button>
+  </div>
+
+  <div class="projects-list" id="projects-list"></div>
+  <div class="empty-state" id="empty-state" hidden>No projects match your filters.</div>
+
+  <footer>
+    <span class="footer-text">Hagar Khaled Helmy &nbsp;·&nbsp; Computer Engineering @ FEHU</span>
+    <span class="footer-text"><a class="footer-link" href="https://github.com/Hagar-Khaled" target="_blank">github.com/Hagar-Khaled</a></span>
+  </footer>
+
+</div>
+
+<script>
+  // ════════════════════════════════════════
+  //   ROJECTS HERE
+  // ════════════════════════════════════════
+  const projects = [
+    {
+      name: "Todo App",
+      desc: "A minimal task manager with local persistence, categories, and priority sorting.",
+      tech: "flutter",
+      demo: "https://youtu.be/YOUR_VIDEO_ID",
+      repo: "https://github.com/Hagar-Khaled/todo-flutter-app",
+      live: "https://your-deployed-app.com",
+      done: false,
+    },
+    {
+      name: "Weather App",
+      desc: "Real-time weather with location detection and 7-day forecast using OpenWeather API.",
+      tech: "react",
+      demo: "https://youtu.be/YOUR_VIDEO_ID_2",
+      repo: "https://github.com/Hagar-Khaled/weather-app",
+      live: null,
+      done: false,
+    },
+    {
+      name: "Project 3",
+      desc: "Coming soon.",
+      tech: "flutter",
+      demo: null, repo: null, live: null,
+      done: false,
+    },
+  ];
+  // ════════════════════════════════════════
+
+  const list = document.getElementById('projects-list');
+  const searchInput = document.getElementById('search-input');
+  const filterButtons = document.querySelectorAll('[data-filter]');
+  const onlyLiveToggle = document.getElementById('only-live');
+  const resultsCount = document.getElementById('results-count');
+  const resetBtn = document.getElementById('reset-btn');
+  const emptyState = document.getElementById('empty-state');
+
+  const state = {
+    filter: 'all',
+    query: '',
+    onlyLive: false,
+  };
+
+  function renderStats() {
+    const total = projects.length;
+    const flutter = projects.filter((p) => p.tech === 'flutter').length;
+    const react = projects.filter((p) => p.tech === 'react').length;
+    const live = projects.filter((p) => Boolean(p.live)).length;
+
+    animateCount('s-total', total);
+    animateCount('s-flutter', flutter);
+    animateCount('s-react', react);
+    animateCount('s-live', live);
+  }
+
+  function renderList(items) {
+    list.innerHTML = '';
+    emptyState.hidden = items.length !== 0;
+
+    items.forEach((p, i) => {
+      const techLabel = p.tech === 'flutter' ? 'Flutter' : p.tech === 'react' ? 'React' : 'Other';
+      const pillClass = p.tech === 'flutter' ? 'tp-flutter' : p.tech === 'react' ? 'tp-react' : 'tp-other';
+
+      const linkItems = [];
+      if (p.demo) linkItems.push(`<a class="link-btn demo" href="${p.demo}" target="_blank">&#9654; Demo</a>`);
+      if (p.repo) linkItems.push(`<a class="link-btn" href="${p.repo}" target="_blank">&#8997; Code</a>`);
+      if (p.live) linkItems.push(`<a class="link-btn live" href="${p.live}" target="_blank">&#8599; Live</a>`);
+
+      const linksHTML = linkItems.length
+        ? `<div class="project-links">${linkItems.join('')}</div>`
+        : `<div class="project-links"><span class="link-empty">Links coming soon</span></div>`;
+
+      const card = document.createElement('div');
+      card.className = 'project-card' + (p.done ? '' : ' wip');
+      card.innerHTML = `
+        <div class="project-index">${String(i + 1).padStart(2, '0')}</div>
+        <div class="project-main">
+          <div class="project-name">
+            ${p.name}
+            ${p.done ? '<span class="status-chip">DONE</span>' : '<span class="wip-chip">WIP</span>'}
+          </div>
+          <div class="project-desc">${p.desc}</div>
+        </div>
+        <div class="project-tech"><span class="tech-pill ${pillClass}">${techLabel}</span></div>
+        ${linksHTML}
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function updateResultsCount(visible) {
+    resultsCount.textContent = `Showing ${visible} of ${projects.length}`;
+  }
+
+  function applyFilters() {
+    const query = state.query.trim().toLowerCase();
+    const filtered = projects.filter((p) => {
+      const matchesFilter =
+        state.filter === 'all' ||
+        (state.filter === 'flutter' && p.tech === 'flutter') ||
+        (state.filter === 'react' && p.tech === 'react') ||
+        (state.filter === 'wip' && !p.done);
+
+      const matchesQuery =
+        query === '' ||
+        [p.name, p.desc, p.tech].some((value) =>
+          String(value || '').toLowerCase().includes(query)
+        );
+
+      const matchesLive = !state.onlyLive || Boolean(p.live);
+
+      return matchesFilter && matchesQuery && matchesLive;
+    });
+
+    renderList(filtered);
+    updateResultsCount(filtered.length);
+  }
+
+  function animateCount(id, target) {
+    const el = document.getElementById(id);
+    if (target === 0) { el.textContent = '0'; return; }
+    let n = 0;
+    const step = Math.max(1, Math.ceil(target / 20));
+    const interval = setInterval(() => {
+      n = Math.min(n + step, target);
+      el.textContent = n;
+      if (n >= target) clearInterval(interval);
+    }, 40);
+  }
+
+  function makeStars() {
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2 + 0.5;
+      s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--max-op:${(Math.random()*0.5+0.1).toFixed(2)};animation-delay:${(Math.random()*6).toFixed(1)}s;`;
+      container.appendChild(s);
+    }
+  }
+
+  makeStars();
+    renderStats();
+    renderList(projects);
+    updateResultsCount(projects.length);
+
+    filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.filter = btn.getAttribute('data-filter');
+      applyFilters();
+    });
+    });
+
+    searchInput.addEventListener('input', (event) => {
+    state.query = event.target.value;
+    applyFilters();
+    });
+
+    onlyLiveToggle.addEventListener('change', (event) => {
+    state.onlyLive = event.target.checked;
+    applyFilters();
+    });
+
+    resetBtn.addEventListener('click', () => {
+    state.filter = 'all';
+    state.query = '';
+    state.onlyLive = false;
+    searchInput.value = '';
+    onlyLiveToggle.checked = false;
+    filterButtons.forEach((b) => b.classList.remove('active'));
+    document.querySelector('[data-filter="all"]').classList.add('active');
+    applyFilters();
+    });
+</script>
+</body>
+</html>

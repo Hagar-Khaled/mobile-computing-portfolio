@@ -15,3 +15,11 @@ A single-file neon portfolio to showcase Flutter and React mobile projects with 
 - Search across name, tech, and description
 - Deployed-only toggle and live results count
 - Project stats (total, Flutter, React, deployed)
+
+---
+
+## Assignment Table
+
+| Assignment Name | Link |
+|-----------------|------|
+| ToDo App        | [Expo Snack - ToDo](https://snack.expo.dev/@hagarkhaled/do-it) |
